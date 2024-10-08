@@ -54,4 +54,27 @@ public class GraphTest {
         String recievedOutput = DotGraph.graphtoString();
         assertFalse("Graph was not outputted as string!", recievedOutput.isEmpty());
     }
+
+    @Test
+    public void addNodeTest(){
+        //Add single node
+        String label = "v";
+        DotGraph.addNode(label);
+        assertTrue("Node 'v' was not added.", DotGraph.containsNode("v"));
+
+
+        //Add multiple nodes at the same time
+        String[] labels = {"x", "y", "z"};
+        DotGraph.addNodes(labels);
+        assertTrue("Node 'x' was not added.", DotGraph.containsNode("x"));
+        assertTrue("Node 'y' was not added.", DotGraph.containsNode("y"));
+        assertTrue("Node 'z' was not added.", DotGraph.containsNode("z"));
+
+
+        //Add existing node
+        label = "x";
+        boolean labelExists = DotGraph.addNode(label);
+        assertTrue("Node 'x' was added when it is a duplicate", labelExists = true);
+    }
+
 }

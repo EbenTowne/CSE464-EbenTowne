@@ -91,6 +91,27 @@ public class DotGraph {
         }
     }
 
+    public static boolean addNode(String label){
+        if (!graph.containsVertex(label)) {
+            graph.addVertex(label);
+            nodes.add(label);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+
+    public static boolean addNodes(String[] labels) {
+        for(String label : labels){
+            boolean x = addNode(label);
+            if(x == false){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static int getNodes(){
         int count = 0;
         for (String node : nodes) {
