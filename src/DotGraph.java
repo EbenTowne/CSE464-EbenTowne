@@ -112,6 +112,21 @@ public class DotGraph {
         return true;
     }
 
+    public static int addEdge(String src, String dst){
+        if(graph.containsEdge(src, dst)){
+            return 1;
+        }
+        if(!containsNode(src)){
+            addNode(src);
+        }
+        if(!containsNode(dst)){
+            addNode(dst);
+        }
+        graph.addEdge(src, dst);
+        return 0;
+    }
+
+
     public static int getNodes(){
         int count = 0;
         for (String node : nodes) {
