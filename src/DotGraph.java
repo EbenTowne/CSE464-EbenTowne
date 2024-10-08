@@ -126,6 +126,33 @@ public class DotGraph {
         return 0;
     }
 
+    public static void outputDOTGraph(String filepath) throws IOException {
+        try (FileWriter fileWriter = new FileWriter(filepath)) {
+            fileWriter.write("digraph G {\n");
+            for (String node : nodes) {
+                fileWriter.write("    " + node + ";\n");
+            }
+            for (DefaultEdge edge : graph.edgeSet()) {
+                String source = graph.getEdgeSource(edge);
+                String dest = graph.getEdgeTarget(edge);
+                fileWriter.write("    " + source + " -> " + dest + ";\n");
+            }
+            fileWriter.write("}\n");
+        }
+    }
+    public static boolean outputGraphics(String path, String format) throws IOException, InterruptedException {
+        if(Objects.equals(format, "pdf")){
+            String outputFile = "output.pdf";
+            ProcessBuilder processBuilder = new ProcessBuilder("dot", "-T" + format, path, "-o", outputFile);
+            Process process = processBuilder.start();
+            int exitCode = process.waitFor();
+            return true;
+        }
+        else{
+            System.out.print("This API can only output .DOT graphs as PDF images");
+            return false;
+        }
+    }
 
     public static int getNodes(){
         int count = 0;

@@ -93,4 +93,26 @@ public class GraphTest {
         assertTrue("Edge added was not added.", edgeAdded == 0);
     }
 
+    @Test
+    public void outputImageTest() throws IOException, InterruptedException {
+        boolean fileCreated = DotGraph.outputGraphics(filepath, "pdf");
+        assertTrue("Output graphic file was not created!", fileCreated);
+    }
+
+    @Test
+    public void outputDOTGraph() throws IOException {
+        String filePath = "output.dot";
+        DotGraph.outputDOTGraph(filePath);
+        File outputFile = new File(filePath);
+        assertTrue("The output file was not created.", outputFile.exists()); //checks that the output file was created
+        StringBuilder fileContent = new StringBuilder(); //read output file contents
+        try (BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                fileContent.append(line);
+            }
+        }
+        assertTrue("Output DOT file empty!", fileContent.length() > 0);
+    }
+
 }
