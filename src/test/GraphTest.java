@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
 import static org.junit.Assert.*;
@@ -20,8 +19,8 @@ public class GraphTest {
 
     @Before
     public void setup() throws IOException {
-        URL resource = this.getClass().getResource("/graphfile.dot");
-        filepath = resource.getPath();
+        file = "graphfile.dot";
+        filepath = getClass().getResource(file).getPath();
         DotGraph.parseGraph(filepath);
     }
 
