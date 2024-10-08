@@ -19,7 +19,7 @@ public class GraphTest {
 
     @Before
     public void setup() throws IOException {
-        file = "graphfile.dot";
+        file = "graphfile.dot"; //resource file
         filepath = getClass().getResource(file).getPath();
         DotGraph.parseGraph(filepath);
     }
