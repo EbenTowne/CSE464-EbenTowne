@@ -24,27 +24,27 @@ public class DotGraph {
                     String src = parts[0].trim();
                     String dst = parts[1].trim();
                     //System.out.println(src + " -> " + dst);
-                    if(!nodes.contains(src)){
+                    if (!nodes.contains(src)) {
                         nodes.add(src);
                         graph.addVertex(src);
                     }
-                    if(!nodes.contains(dst)){
+                    if (!nodes.contains(dst)) {
                         nodes.add(dst);
                         graph.addVertex(dst);
                     }
                     graph.addEdge(src, dst);
                 }
-            }
-            else if (line.endsWith(";")) {
+            } else if (line.endsWith(";")) {
                 // Parse standalone nodes
                 String node = line.replace(";", "").trim();
-                if(!nodes.contains(node)) {
+                if (!nodes.contains(node)) {
                     nodes.add(node);
                     graph.addVertex(node);
                     //System.out.println(node);
                 }
             }
         }
+        System.out.println("Graph has been successfully parsed");
         reader.close();
         return graph;
     }
@@ -52,6 +52,7 @@ public class DotGraph {
     private static void initializeGraph() {
         graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         nodes = new Vector<>();
+        System.out.println("\nGraph initialized");
     }
 
     public static String graphtoString(){
@@ -67,7 +68,7 @@ public class DotGraph {
             nodeCount++;
         }
         output.append("Total node count: ").append(nodeCount + "\n");
-        System.out.println("Edge List: ");
+        System.out.println("\nEdge List: ");
         output.append("Edge List: " + "\n");
         for (DefaultEdge edge : graph.edgeSet()) {
             String source = graph.getEdgeSource(edge);
@@ -85,7 +86,7 @@ public class DotGraph {
         String output = DotGraph.graphtoString();
         try(FileWriter writer = new FileWriter(outputPath)){
             writer.write(output);
-            System.out.println("Output written to " + outputPath);
+            System.out.println("Output successfully written to " + outputPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -95,6 +96,7 @@ public class DotGraph {
         if (!graph.containsVertex(label)) {
             graph.addVertex(label);
             nodes.add(label);
+            System.out.println("Node added: " + label);
         } else {
             return false;
         }
@@ -109,6 +111,7 @@ public class DotGraph {
                 return false;
             }
         }
+        System.out.println("List of nodes have been added successfully");
         return true;
     }
 
@@ -118,11 +121,14 @@ public class DotGraph {
         }
         if(!containsNode(src)){
             addNode(src);
+            System.out.println("Source node '" + src + "' has been added");
         }
         if(!containsNode(dst)){
             addNode(dst);
+            System.out.println("Destination node '" + dst + "' has been added");
         }
         graph.addEdge(src, dst);
+        System.out.println("Edge '" + src + "->" + dst + "' has been added");
         return 0;
     }
 
@@ -138,6 +144,7 @@ public class DotGraph {
                 fileWriter.write("    " + source + " -> " + dest + ";\n");
             }
             fileWriter.write("}\n");
+            System.out.println("DOT Graph has been created and written to " + filepath);
         }
     }
     public static boolean outputGraphics(String path, String format) throws IOException, InterruptedException {
@@ -146,6 +153,7 @@ public class DotGraph {
             ProcessBuilder processBuilder = new ProcessBuilder("dot", "-T" + format, path, "-o", outputFile);
             Process process = processBuilder.start();
             int exitCode = process.waitFor();
+            System.out.println("DOT Graph Image has been successfully created and written to " + outputFile);
             return true;
         }
         else{

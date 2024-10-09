@@ -30,7 +30,6 @@ public class GraphTest {
         assertEquals(5, totalNodes);
         int totalEdges = DotGraph.getEdges();
         assertEquals(7, totalEdges);
-
     }
 
     @Test
