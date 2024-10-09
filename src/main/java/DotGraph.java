@@ -148,8 +148,8 @@ public class DotGraph {
         }
     }
     public static boolean outputGraphics(String path, String format) throws IOException, InterruptedException {
-        if(Objects.equals(format, "pdf")){
-            String outputFile = "output.pdf";
+        if(Objects.equals(format, "png")){
+            String outputFile = "output.png";
             ProcessBuilder processBuilder = new ProcessBuilder("dot", "-T" + format, path, "-o", outputFile);
             Process process = processBuilder.start();
             int exitCode = process.waitFor();

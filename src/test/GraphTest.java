@@ -1,6 +1,7 @@
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -94,7 +95,7 @@ public class GraphTest {
 
     @Test
     public void outputImageTest() throws IOException, InterruptedException {
-        boolean fileCreated = DotGraph.outputGraphics(filepath, "pdf");
+        boolean fileCreated = DotGraph.outputGraphics(filepath, "png");
         assertTrue("Output graphic file was not created!", fileCreated);
     }
 
@@ -113,5 +114,4 @@ public class GraphTest {
         }
         assertTrue("Output DOT file empty!", fileContent.length() > 0);
     }
-
 }
