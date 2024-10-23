@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '11'
-        distribution: 'tumerin'
+        distribution: 'temurin'
 
     - name: Install Graphviz
       run: sudo apt-get install -y graphviz
