@@ -114,4 +114,57 @@ public class GraphTest {
         }
         assertTrue("Output DOT file empty!", fileContent.length() > 0);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeNodeTest() throws IOException {
+        //removing node that does exist
+        String label = "z";
+        DotGraph.addNode(label);
+        boolean status = DotGraph.removeNode(label);
+        assertTrue("Node 'z' was not successfully removed.", status);
+
+
+        //removing node that does NOT exist (throws exception)
+        label = "t";
+        DotGraph.removeNode(label);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeNodesTest() throws IOException {
+        //removing nodes that do exist
+        String[] labels1 = {"x", "y", "z"};
+        DotGraph.addNodes(labels1);
+        int totalRemoved1 = DotGraph.removeNodes(labels1);
+        assertEquals("Nodes 'x', 'y', and 'z' were not successfully removed.", 3, totalRemoved1);
+
+
+        //removing nodes where some exist and some do not exist
+        DotGraph.addNodes(labels1);
+        String[] labels3 = {"u", "w", "x", "y", "z"};
+        int totalRemoved2 = DotGraph.removeNodes(labels3);
+        assertEquals("Node 'u' and 'w' were removed when they do not exist", 3, totalRemoved2);
+
+
+        //removing nodes where none of the nodes exist (throws exception)
+        String[] labels2 = {"l", "m", "n", "o"};
+        DotGraph.removeNodes(labels2); //throws exception because l, m, n, and o do not exist
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void removeEdge() throws IOException {
+        //removing edge that does exist
+        String src = "a";
+        String dst = "d";
+        boolean result = DotGraph.removeEdge(src, dst);
+        assertTrue("Edge was not successfully removed.", result);
+
+
+        //removing edge that does NOT exist (throws exception)
+        src = "t";
+        dst = "u";
+        DotGraph.removeEdge(src, dst); //throws exception because t->u does not exist
+    }
+
 }

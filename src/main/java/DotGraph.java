@@ -186,4 +186,40 @@ public class DotGraph {
         }
         return false;
     }
+    public static boolean removeNode(String label) {
+        if(graph.containsVertex(label)){
+            System.out.println("Removing node " + label);
+            graph.removeVertex(label);
+            nodes.remove(label);
+            return true;
+        }
+        else{
+            System.out.println("Node " + label + " does not exist");
+            throw new IllegalArgumentException("Node " + label + " does not exist in the graph");
+        }
+    }
+
+    public static int removeNodes(String[] labels) {
+        int totalRemoved = 0;
+        for(String label : labels){
+            boolean result = removeNode(label);
+            if(result){
+                totalRemoved++;
+            }
+        }
+        return totalRemoved;
+    }
+
+    public static boolean removeEdge(String srcLabel, String dstLabel){
+        if(graph.containsEdge(srcLabel, dstLabel)){
+            System.out.println("Removing edge " + srcLabel + "->" + dstLabel);
+            graph.removeEdge(srcLabel, dstLabel);
+            return true;
+        }
+        else{
+            System.out.println("Edge " + srcLabel + "->" + dstLabel + " does not exist");
+            throw new IllegalArgumentException("Edge " + srcLabel + "->" + dstLabel + " was not found in the graph");
+        }
+    }
+
 }
