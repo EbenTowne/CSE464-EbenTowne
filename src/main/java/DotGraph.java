@@ -6,6 +6,23 @@ import java.util.Objects;
 import java.util.Vector;
 
 public class DotGraph {
+
+    public static class Path{
+        Vector<String> nodes;
+
+        public Path(){
+            nodes = new Vector<>();
+        }
+
+        public void addNode(String node){
+            nodes.add(node);
+        }
+
+        public String toString(){
+            return String.join("->", nodes);
+        }
+    }
+
     static DefaultDirectedGraph<String, DefaultEdge> graph;
     static Vector<String> nodes;
 
@@ -185,5 +202,85 @@ public class DotGraph {
             }
         }
         return false;
+    }
+
+    public static boolean removeNode(String label) {
+        if(graph.containsVertex(label)){
+            System.out.println("Removing node " + label);
+            graph.removeVertex(label);
+            nodes.remove(label);
+            return true;
+        }
+        else{
+            System.out.println("Node " + label + " does not exist");
+            throw new IllegalArgumentException("Node " + label + " does not exist in the graph");
+        }
+    }
+
+    public static int removeNodes(String[] labels) {
+        int totalRemoved = 0;
+        for(String label : labels){
+            boolean result = removeNode(label);
+            if(result){
+                totalRemoved++;
+            }
+        }
+        return totalRemoved;
+    }
+
+    public static boolean removeEdge(String srcLabel, String dstLabel){
+        if(graph.containsEdge(srcLabel, dstLabel)){
+            System.out.println("Removing edge " + srcLabel + "->" + dstLabel);
+            graph.removeEdge(srcLabel, dstLabel);
+            return true;
+        }
+        else{
+            System.out.println("Edge " + srcLabel + "->" + dstLabel + " does not exist");
+            throw new IllegalArgumentException("Edge " + srcLabel + "->" + dstLabel + " was not found in the graph");
+        }
+    }
+
+    public static Path GraphSearch(String src, String dst){
+        if(!graph.containsVertex(src)){
+            System.out.println("Source node '" + src + "' does not exist");
+            throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
+        }
+        if(!graph.containsVertex(dst)){
+            System.out.println("Destination node '" + dst + "' does not exist");
+            throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
+        }
+
+        Path path = new Path();
+
+        Vector<String> startPath = new Vector<>();
+        Vector<Vector<String>> queue = new Vector<>();
+        Vector<String> visited = new Vector<>();
+
+        startPath.add(src);
+        queue.add(startPath);
+
+        while(!queue.isEmpty()){
+            Vector<String> currPath = queue.remove(0);
+            String currNode = currPath.lastElement();
+
+            if(currNode.equals(dst)){
+                path.nodes = currPath;
+                return path;
+            }
+            if(!visited.contains(currNode)) {
+                visited.add(currNode);
+
+                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
+                    String targetNode = graph.getEdgeTarget(edge);
+
+                    if (!visited.contains(targetNode)) {
+                        Vector<String> newPath = new Vector<>(currPath);
+                        newPath.add(targetNode);
+                        queue.add(newPath);
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
