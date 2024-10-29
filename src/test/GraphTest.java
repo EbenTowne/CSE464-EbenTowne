@@ -162,7 +162,7 @@ public class GraphTest {
     }
 
     @Test
-    public void bfsTest() throws IOException {
+    public void bfsTest() throws IOException { //test for successful bfs
         String src = "a";
         String dst = "e";
         DotGraph.Path result = DotGraph.GraphSearch(src, dst);
