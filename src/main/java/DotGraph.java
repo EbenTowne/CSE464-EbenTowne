@@ -14,10 +14,6 @@ public class DotGraph {
             nodes = new Vector<>();
         }
 
-        public void addNode(String node){
-            nodes.add(node);
-        }
-
         public String toString(){
             return String.join("->", nodes);
         }
@@ -265,6 +261,7 @@ public class DotGraph {
 
             if(currNode.equals(dst)){
                 path.nodes = currPath;
+                System.out.println("Path Found: " + path.toString());
                 return path;
             }
             if(!visited.contains(currNode)) {
@@ -281,6 +278,7 @@ public class DotGraph {
                 }
             }
         }
+        System.out.println("Path was not found between " + src + " and " + dst);
         return null;
     }
 }

@@ -162,12 +162,36 @@ public class GraphTest {
     }
 
     @Test
-    public void bfsTest() throws IOException { //successful bfs test
+    public void bfsTest() throws IOException {
+        //successful bfs test
         String src = "a";
         String dst = "e";
         DotGraph.Path result = DotGraph.GraphSearch(src, dst);
         assertNotNull("Path between 'a' and 'e' should exist", result);
-        String str = result.toString();
-        System.out.println(str);
+
+        //creating new edge to test invalid path
+        src = "f";
+        dst = "a";
+        DotGraph.addEdge(src, dst);
+
+        //path does not exist
+        src = "d";
+        dst = "f";
+        result = DotGraph.GraphSearch(src, dst);
+        assertNull("Path between 'd' and 'f' should not exist", result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void bfsBadSrcTest() throws IOException {
+        String src = "z";
+        String dst = "e";
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void bfsBadDstTest() throws IOException {
+        String src = "a";
+        String dst = "z";
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
     }
 }
