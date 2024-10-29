@@ -241,11 +241,11 @@ public class DotGraph {
     }
 
     public static Path GraphSearch(String src, String dst){
-        if(!graph.containsVertex(src)){
+        if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
         }
-        if(!graph.containsVertex(dst)){
+        if(!graph.containsVertex(dst)){ //if dst does not exist
             System.out.println("Destination node '" + dst + "' does not exist");
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
