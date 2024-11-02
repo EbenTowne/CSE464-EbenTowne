@@ -236,7 +236,7 @@ public class DotGraph {
         }
     }
 
-    /*public static Path GraphSearch(String src, String dst){ //dfs algorithm
+    public static Path GraphSearch(String src, String dst){ //dfs algorithm
         if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
@@ -280,9 +280,9 @@ public class DotGraph {
         }
         System.out.println("Path was not found between " + src + " and " + dst);
         return null;
-    }*/
+    }
 
-    public static Path GraphSearch(String src, String dst){ //bfs algorithm
+    /*public static Path GraphSearch(String src, String dst){ //bfs algorithm
         if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
@@ -326,5 +326,5 @@ public class DotGraph {
         }
         System.out.println("Path was not found between " + src + " and " + dst);
         return null;
-    }
+    }*/
 }
