@@ -162,7 +162,7 @@ public class GraphTest {
     }
 
     @Test
-    public void bfsTest() throws IOException {
+    public void GraphSearchTest() throws IOException {
         //successful bfs test
         String src = "a";
         String dst = "e";
@@ -182,14 +182,14 @@ public class GraphTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void bfsBadSrcTest() throws IOException {
+    public void GraphSearchBadSrcTest() throws IOException {
         String src = "z";
         String dst = "e";
         DotGraph.Path result = DotGraph.GraphSearch(src, dst);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void bfsBadDstTest() throws IOException {
+    public void GraphSearchBadDstTest() throws IOException {
         String src = "a";
         String dst = "z";
         DotGraph.Path result = DotGraph.GraphSearch(src, dst);
