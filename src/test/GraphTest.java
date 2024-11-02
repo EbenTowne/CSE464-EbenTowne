@@ -28,9 +28,9 @@ public class GraphTest {
     @Test
     public void parseTest() throws IOException {
         int totalNodes = DotGraph.getNodes();
-        assertEquals(5, totalNodes);
+        assertEquals(6, totalNodes);
         int totalEdges = DotGraph.getEdges();
-        assertEquals(7, totalEdges);
+        assertEquals(6, totalEdges);
     }
 
     @Test
@@ -165,20 +165,20 @@ public class GraphTest {
     public void GraphSearchTest() throws IOException {
         //successful bfs test
         String src = "a";
-        String dst = "e";
+        String dst = "f";
         DotGraph.Path result = DotGraph.GraphSearch(src, dst);
         assertNotNull("Path between 'a' and 'e' should exist", result);
 
         //creating new edge to test invalid path
-        src = "f";
+        src = "g";
         dst = "a";
         DotGraph.addEdge(src, dst);
 
         //path does not exist
         src = "d";
-        dst = "f";
-        result = DotGraph.GraphSearch(src, dst);
-        assertNull("Path between 'd' and 'f' should not exist", result);
+        dst = "g";
+        DotGraph.Path result2 = DotGraph.GraphSearch(src, dst);
+        assertNull("Path between 'd' and 'g' should not exist", result2);
     }
 
     @Test(expected = IllegalArgumentException.class)

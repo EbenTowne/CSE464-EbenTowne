@@ -4,11 +4,11 @@ digraph {
     c;
     d;
     e;
+    f;
     a -> b;
     a -> c;
     b -> d;
+    b -> e;
     c -> d;
-    c -> e;
-    e -> a;
-    a -> d;
+    d -> f;
 }
