@@ -273,7 +273,7 @@ public class DotGraph {
 
             if(currNode.equals(dst)){
                 path.nodes = currPath;
-                System.out.println("Path Found: " + path.toString());
+                System.out.println("Path Found (DFS): " + path.toString());
                 return path;
             }
             if(!visited.contains(currNode)) {
