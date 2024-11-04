@@ -162,7 +162,7 @@ public class GraphTest {
     }
 
     @Test
-    public void GraphSearchTest() throws IOException {
+    public void GraphSearchTest() throws IOException { //updated
         //successful bfs test
         String src = "a";
         String dst = "f";

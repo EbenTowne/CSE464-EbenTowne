@@ -240,7 +240,7 @@ public class DotGraph {
         }
     }
 
-    public static Path GraphSearch(String src, String dst, Algorithm algo) { //dfs algorithm
+    public static Path GraphSearch(String src, String dst, Algorithm algo) {
         if (!graph.containsVertex(src)) { //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
