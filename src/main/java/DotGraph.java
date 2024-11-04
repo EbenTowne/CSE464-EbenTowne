@@ -236,53 +236,7 @@ public class DotGraph {
         }
     }
 
-    /*public static Path GraphSearch(String src, String dst){ //dfs algorithm
-        if(!graph.containsVertex(src)){ //if src does not exist
-            System.out.println("Source node '" + src + "' does not exist");
-            throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
-        }
-        if(!graph.containsVertex(dst)){ //if dst does not exist
-            System.out.println("Destination node '" + dst + "' does not exist");
-            throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
-        }
-
-        Path path = new Path();
-
-        Vector<String> startPath = new Vector<>();
-        Vector<Vector<String>> stack = new Vector<>();
-        Vector<String> visited = new Vector<>();
-
-        startPath.add(src);
-        stack.add(startPath);
-
-        while(!stack.isEmpty()){
-            Vector<String> currPath = stack.remove(stack.size() - 1);//bfs
-            String currNode = currPath.lastElement();
-
-            if(currNode.equals(dst)){
-                path.nodes = currPath;
-                System.out.println("Path Found: " + path.toString());
-                return path;
-            }
-            if(!visited.contains(currNode)) {
-                visited.add(currNode);
-
-                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
-                    String targetNode = graph.getEdgeTarget(edge);
-
-                    if (!visited.contains(targetNode)) {
-                        Vector<String> newPath = new Vector<>(currPath);
-                        newPath.add(targetNode);
-                        stack.add(newPath);
-                    }
-                }
-            }
-        }
-        System.out.println("Path was not found between " + src + " and " + dst);
-        return null;
-    }*/
-
-    public static Path GraphSearch(String src, String dst){ //bfs algorithm
+    public static Path GraphSearch(String src, String dst){
         if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
