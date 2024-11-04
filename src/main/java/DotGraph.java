@@ -18,6 +18,10 @@ public class DotGraph {
         }
     }
 
+    public enum Algorithm {
+        BFS, DFS
+    }
+
     static DefaultDirectedGraph<String, DefaultEdge> graph;
     static Vector<String> nodes;
 
