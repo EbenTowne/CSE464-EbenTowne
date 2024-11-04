@@ -28,9 +28,9 @@ public class GraphTest {
     @Test
     public void parseTest() throws IOException {
         int totalNodes = DotGraph.getNodes();
-        assertEquals(5, totalNodes);
+        assertEquals(6, totalNodes);
         int totalEdges = DotGraph.getEdges();
-        assertEquals(7, totalEdges);
+        assertEquals(6, totalEdges);
     }
 
     @Test
@@ -123,12 +123,10 @@ public class GraphTest {
         boolean status = DotGraph.removeNode(label);
         assertTrue("Node 'z' was not successfully removed.", status);
 
-
         //removing node that does NOT exist (throws exception)
         label = "t";
         DotGraph.removeNode(label);
     }
-
 
     @Test(expected = IllegalArgumentException.class)
     public void removeNodesTest() throws IOException {
@@ -138,19 +136,16 @@ public class GraphTest {
         int totalRemoved1 = DotGraph.removeNodes(labels1);
         assertEquals("Nodes 'x', 'y', and 'z' were not successfully removed.", 3, totalRemoved1);
 
-
         //removing nodes where some exist and some do not exist
         DotGraph.addNodes(labels1);
         String[] labels3 = {"u", "w", "x", "y", "z"};
         int totalRemoved2 = DotGraph.removeNodes(labels3);
         assertEquals("Node 'u' and 'w' were removed when they do not exist", 3, totalRemoved2);
 
-
         //removing nodes where none of the nodes exist (throws exception)
         String[] labels2 = {"l", "m", "n", "o"};
         DotGraph.removeNodes(labels2); //throws exception because l, m, n, and o do not exist
     }
-
 
     @Test(expected = IllegalArgumentException.class)
     public void removeEdge() throws IOException {
@@ -160,11 +155,43 @@ public class GraphTest {
         boolean result = DotGraph.removeEdge(src, dst);
         assertTrue("Edge was not successfully removed.", result);
 
-
         //removing edge that does NOT exist (throws exception)
         src = "t";
         dst = "u";
         DotGraph.removeEdge(src, dst); //throws exception because t->u does not exist
     }
 
+    @Test
+    public void GraphSearchTest() throws IOException {
+        //successful bfs test
+        String src = "a";
+        String dst = "f";
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
+        assertNotNull("Path between 'a' and 'e' should exist", result);
+
+        //creating new edge to test invalid path
+        src = "g";
+        dst = "a";
+        DotGraph.addEdge(src, dst);
+
+        //path does not exist
+        src = "d";
+        dst = "g";
+        DotGraph.Path result2 = DotGraph.GraphSearch(src, dst);
+        assertNull("Path between 'd' and 'g' should not exist", result2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void GraphSearchBadSrcTest() throws IOException {
+        String src = "z";
+        String dst = "e";
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void GraphSearchBadDstTest() throws IOException {
+        String src = "a";
+        String dst = "z";
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
+    }
 }

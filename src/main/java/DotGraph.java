@@ -2,10 +2,22 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
 import java.io.*;
-import java.util.Objects;
-import java.util.Vector;
+import java.util.*;
 
 public class DotGraph {
+
+    public static class Path{
+        Vector<String> nodes;
+
+        public Path(){
+            nodes = new Vector<>();
+        }
+
+        public String toString(){
+            return String.join("->", nodes);
+        }
+    }
+
     static DefaultDirectedGraph<String, DefaultEdge> graph;
     static Vector<String> nodes;
 
@@ -166,6 +178,7 @@ public class DotGraph {
         int count = 0;
         for (String node : nodes) {
             count++;
+            System.out.print(node);
         }
         return count;
     }
@@ -186,6 +199,7 @@ public class DotGraph {
         }
         return false;
     }
+
     public static boolean removeNode(String label) {
         if(graph.containsVertex(label)){
             System.out.println("Removing node " + label);
@@ -222,4 +236,95 @@ public class DotGraph {
         }
     }
 
+    /*public static Path GraphSearch(String src, String dst){ //dfs algorithm
+        if(!graph.containsVertex(src)){ //if src does not exist
+            System.out.println("Source node '" + src + "' does not exist");
+            throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
+        }
+        if(!graph.containsVertex(dst)){ //if dst does not exist
+            System.out.println("Destination node '" + dst + "' does not exist");
+            throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
+        }
+
+        Path path = new Path();
+
+        Vector<String> startPath = new Vector<>();
+        Vector<Vector<String>> stack = new Vector<>();
+        Vector<String> visited = new Vector<>();
+
+        startPath.add(src);
+        stack.add(startPath);
+
+        while(!stack.isEmpty()){
+            Vector<String> currPath = stack.remove(stack.size() - 1);//bfs
+            String currNode = currPath.lastElement();
+
+            if(currNode.equals(dst)){
+                path.nodes = currPath;
+                System.out.println("Path Found: " + path.toString());
+                return path;
+            }
+            if(!visited.contains(currNode)) {
+                visited.add(currNode);
+
+                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
+                    String targetNode = graph.getEdgeTarget(edge);
+
+                    if (!visited.contains(targetNode)) {
+                        Vector<String> newPath = new Vector<>(currPath);
+                        newPath.add(targetNode);
+                        stack.add(newPath);
+                    }
+                }
+            }
+        }
+        System.out.println("Path was not found between " + src + " and " + dst);
+        return null;
+    }*/
+
+    public static Path GraphSearch(String src, String dst){ //bfs algorithm
+        if(!graph.containsVertex(src)){ //if src does not exist
+            System.out.println("Source node '" + src + "' does not exist");
+            throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
+        }
+        if(!graph.containsVertex(dst)){ //if dst does not exist
+            System.out.println("Destination node '" + dst + "' does not exist");
+            throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
+        }
+
+        Path path = new Path();
+
+        Vector<String> startPath = new Vector<>();
+        Vector<Vector<String>> queue = new Vector<>();
+        Vector<String> visited = new Vector<>();
+
+        startPath.add(src);
+        queue.add(startPath);
+
+        while(!queue.isEmpty()){
+            Vector<String> currPath = queue.remove(0);
+            String currNode = currPath.lastElement();
+
+            if(currNode.equals(dst)){
+                path.nodes = currPath;
+                System.out.println("Path Found: " + path.toString());
+                return path;
+            }
+            if(!visited.contains(currNode)) {
+                visited.add(currNode);
+
+                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
+                    String targetNode = graph.getEdgeTarget(edge);
+
+                    if (!visited.contains(targetNode)) {
+                        Vector<String> newPath = new Vector<>(currPath);
+                        newPath.add(targetNode);
+                        queue.add(newPath);
+                    }
+                }
+            }
+        }
+        System.out.println("Path was not found between " + src + " and " + dst);
+        return null;
+    }
 }
