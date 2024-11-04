@@ -5,10 +5,15 @@ digraph {
     d;
     e;
     f;
+    g;
+    h;
     a -> b;
     a -> c;
-    b -> d;
+    a -> d;
     b -> e;
-    c -> d;
-    d -> f;
+    c -> f;
+    d -> g;
+    g -> h;
+    h -> f;
+    e -> f;
 }
