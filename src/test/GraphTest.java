@@ -162,36 +162,54 @@ public class GraphTest {
     }
 
     @Test
-    public void GraphSearchTest() throws IOException {
+    public void GraphSearchTest() throws IOException { //updated
         //successful bfs test
         String src = "a";
         String dst = "f";
-        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
-        assertNotNull("Path between 'a' and 'e' should exist", result);
+
+        //Testing BFS
+        DotGraph.Algorithm algo = DotGraph.Algorithm.BFS;
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst, algo);
+        assertNotNull("Path between 'a' and 'h' should exist for BFS", result);
+
+        //Testing DFS
+        algo = DotGraph.Algorithm.DFS;
+        result = DotGraph.GraphSearch(src, dst, algo);
+        assertNotNull("Path between 'a' and 'h' should exist for DFS", result);
 
         //creating new edge to test invalid path
-        src = "g";
+        src = "z";
         dst = "a";
         DotGraph.addEdge(src, dst);
 
         //path does not exist
         src = "d";
-        dst = "g";
-        DotGraph.Path result2 = DotGraph.GraphSearch(src, dst);
-        assertNull("Path between 'd' and 'g' should not exist", result2);
+        dst = "a";
+
+        //Testing BFS for invalid path
+        algo = DotGraph.Algorithm.BFS;
+        DotGraph.Path result2 = DotGraph.GraphSearch(src, dst, algo);
+        assertNull("Path between 'd' and 'a' should not exist", result2);
+
+        //Testing DFS for invalid path
+        algo = DotGraph.Algorithm.DFS;
+        DotGraph.Path result3 = DotGraph.GraphSearch(src, dst, algo);
+        assertNull("Path between 'd' and 'a' should not exist", result3);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void GraphSearchBadSrcTest() throws IOException {
+        DotGraph.Algorithm algo = DotGraph.Algorithm.BFS; //only one algorithm is tested due to an error being thrown
         String src = "z";
         String dst = "e";
-        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst, algo);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void GraphSearchBadDstTest() throws IOException {
+        DotGraph.Algorithm algo = DotGraph.Algorithm.BFS; //only one algorithm is tested due to an error being thrown
         String src = "a";
         String dst = "z";
-        DotGraph.Path result = DotGraph.GraphSearch(src, dst);
+        DotGraph.Path result = DotGraph.GraphSearch(src, dst, algo);
     }
 }
