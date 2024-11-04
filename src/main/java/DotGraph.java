@@ -240,7 +240,7 @@ public class DotGraph {
         }
     }
 
-    public static Path GraphSearch(String src, String dst){ 
+    public static Path GraphSearch(String src, String dst, Algorithm algo){
         if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
@@ -249,7 +249,15 @@ public class DotGraph {
             System.out.println("Destination node '" + dst + "' does not exist");
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
+        if (algo == Algorithm.BFS) {
+            return bfsSearch(src, dst);
+        } else if (algo == Algorithm.DFS) {
+            return dfsSearch(src, dst);
+        }
+        return null;
+    }
 
+    public static Path dfsSearch(String src, String dst) { //dfs
         Path path = new Path();
 
         Vector<String> startPath = new Vector<>();
@@ -260,7 +268,7 @@ public class DotGraph {
         stack.add(startPath);
 
         while(!stack.isEmpty()){
-            Vector<String> currPath = stack.remove(stack.size() - 1);//bfs
+            Vector<String> currPath = stack.remove(stack.size() - 1);
             String currNode = currPath.lastElement();
 
             if(currNode.equals(dst)){
@@ -283,6 +291,42 @@ public class DotGraph {
             }
         }
         System.out.println("Path was not found between " + src + " and " + dst);
+        return null;
+    }
+
+    public static Path bfsSearch(String src, String dst) {
+        Path path = new Path();
+        Vector<String> startPath = new Vector<>();
+        Vector<Vector<String>> queue = new Vector<>();
+        Vector<String> visited = new Vector<>();
+
+        startPath.add(src);
+        queue.add(startPath);
+
+        while (!queue.isEmpty()) {
+            Vector<String> currPath = queue.remove(0);
+            String currNode = currPath.lastElement();
+
+            if (currNode.equals(dst)) {
+                path.nodes = currPath;
+                System.out.println("Path Found (BFS): " + path.toString());
+                return path;
+            }
+            if (!visited.contains(currNode)) {
+                visited.add(currNode);
+
+                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
+                    String targetNode = graph.getEdgeTarget(edge);
+
+                    if (!visited.contains(targetNode)) {
+                        Vector<String> newPath = new Vector<>(currPath);
+                        newPath.add(targetNode);
+                        queue.add(newPath);
+                    }
+                }
+            }
+        }
+        System.out.println("Path was not found between " + src + " and " + dst + " using BFS");
         return null;
     }
 }
