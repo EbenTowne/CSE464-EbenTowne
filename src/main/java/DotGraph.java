@@ -212,7 +212,7 @@ public class DotGraph {
             return true;
         }
         else{
-            System.out.println("Node " + label + " does not exist");
+            System.out.println("Node does not exist");
             throw new IllegalArgumentException("Node " + label + " does not exist in the graph");
         }
     }
@@ -273,7 +273,7 @@ public class DotGraph {
 
             if(currNode.equals(dst)){
                 path.nodes = currPath;
-                System.out.println("Path Found: " + path.toString());
+                System.out.println("Path Found (DFS): " + path.toString());
                 return path;
             }
             if(!visited.contains(currNode)) {
@@ -290,7 +290,7 @@ public class DotGraph {
                 }
             }
         }
-        System.out.println("Path was not found between " + src + " and " + dst);
+        System.out.println("Path was not found between " + src + " and " + dst + " using DFS");
         return null;
     }
 

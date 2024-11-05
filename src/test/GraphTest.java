@@ -124,6 +124,7 @@ public class GraphTest {
         assertTrue("Node 'z' was not successfully removed.", status);
 
         //removing node that does NOT exist (throws exception)
+        System.out.println("Attempting to remove node that does not exist:");
         label = "t";
         DotGraph.removeNode(label);
     }
@@ -132,13 +133,17 @@ public class GraphTest {
     public void removeNodesTest() throws IOException {
         //removing nodes that do exist
         String[] labels1 = {"x", "y", "z"};
+        System.out.println("Adding nodes x, y, and z");
         DotGraph.addNodes(labels1);
+        System.out.println("Removing nodes x, y, and z");
         int totalRemoved1 = DotGraph.removeNodes(labels1);
         assertEquals("Nodes 'x', 'y', and 'z' were not successfully removed.", 3, totalRemoved1);
 
         //removing nodes where some exist and some do not exist
+        System.out.println("Adding nodes x, y, and z");
         DotGraph.addNodes(labels1);
         String[] labels3 = {"u", "w", "x", "y", "z"};
+        System.out.println("Removing nodes u, w, x, y, and z");
         int totalRemoved2 = DotGraph.removeNodes(labels3);
         assertEquals("Node 'u' and 'w' were removed when they do not exist", 3, totalRemoved2);
 
@@ -156,6 +161,7 @@ public class GraphTest {
         assertTrue("Edge was not successfully removed.", result);
 
         //removing edge that does NOT exist (throws exception)
+        System.out.println("Attempting to remove an edge that does not exist:");
         src = "t";
         dst = "u";
         DotGraph.removeEdge(src, dst); //throws exception because t->u does not exist
