@@ -18,14 +18,10 @@ public class DotGraph {
         }
     }
 
-    public enum Algorithm {
-        BFS, DFS
-    }
+    private static DefaultDirectedGraph<String, DefaultEdge> graph;
+    private static Vector<String> nodes;
 
-    static DefaultDirectedGraph<String, DefaultEdge> graph;
-    static Vector<String> nodes;
-
-    public static DefaultDirectedGraph<String, DefaultEdge> parseGraph(String filename) throws IOException {
+    public static void parseGraph(String filename) throws IOException {
         initializeGraph();
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
@@ -56,13 +52,11 @@ public class DotGraph {
                 if (!nodes.contains(node)) {
                     nodes.add(node);
                     graph.addVertex(node);
-                    //System.out.println(node);
                 }
             }
         }
         System.out.println("Graph has been successfully parsed");
         reader.close();
-        return graph;
     }
 
     private static void initializeGraph() {
@@ -120,15 +114,14 @@ public class DotGraph {
     }
 
 
-    public static boolean addNodes(String[] labels) {
+    public static void addNodes(String[] labels) {
         for(String label : labels){
             boolean x = addNode(label);
-            if(x == false){
-                return false;
+            if(!x){
+                return;
             }
         }
         System.out.println("List of nodes have been added successfully");
-        return true;
     }
 
     public static int addEdge(String src, String dst){
@@ -238,6 +231,10 @@ public class DotGraph {
             System.out.println("Edge " + srcLabel + "->" + dstLabel + " does not exist");
             throw new IllegalArgumentException("Edge " + srcLabel + "->" + dstLabel + " was not found in the graph");
         }
+    }
+
+    public enum Algorithm {
+        BFS, DFS
     }
 
     public static Path GraphSearch(String src, String dst, Algorithm algo){
