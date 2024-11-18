@@ -82,15 +82,15 @@ public class GraphTest {
         //Add edge with existing nodes
         String src = "b";
         String dst = "c";
-        int edgeAdded = DotGraph.addEdge(src, dst);
-        assertTrue("Edge added was not added.", edgeAdded == 0);
+        boolean edgeAdded = DotGraph.addEdge(src, dst);
+        assertTrue("Edge added was not added.", edgeAdded);
 
 
         //Add edge with new nodes
         src = "f";
         dst = "g";
         edgeAdded = DotGraph.addEdge(src, dst);
-        assertTrue("Edge added was not added.", edgeAdded == 0);
+        assertTrue("Edge added was not added.", edgeAdded);
     }
 
     @Test

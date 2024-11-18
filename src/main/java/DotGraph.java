@@ -116,21 +116,16 @@ public class DotGraph {
         System.out.println("List of nodes have been added successfully");
     }
 
-    public static int addEdge(String src, String dst){
+    public static boolean addEdge(String src, String dst){
         if(graph.containsEdge(src, dst)){
-            return 1;
+            return false;
         }
-        if(!containsNode(src)){
-            addNode(src);
-            System.out.println("Source node '" + src + "' has been added");
-        }
-        if(!containsNode(dst)){
-            addNode(dst);
-            System.out.println("Destination node '" + dst + "' has been added");
-        }
+        addNode(src);
+        addNode(dst);
+        System.out.println("Source node '" + src + "' and destination node '" + dst + "' have both been added");
         graph.addEdge(src, dst);
         System.out.println("Edge '" + src + "->" + dst + "' has been added");
-        return 0;
+        return true;
     }
 
     public static void outputDOTGraph(String filepath) throws IOException {
