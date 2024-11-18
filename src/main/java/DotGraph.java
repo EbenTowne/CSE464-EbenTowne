@@ -5,20 +5,6 @@ import java.io.*;
 import java.util.*;
 
 public class DotGraph {
-
-    public static class Path{
-        Vector<String> nodes;
-
-        //path constructor
-        public Path(){
-            nodes = new Vector<>();
-        }
-
-        public String toString(){
-            return String.join("->", nodes);
-        }
-    }
-
     private static DefaultDirectedGraph<String, DefaultEdge> graph;
     private static Vector<String> nodes;
 
@@ -65,22 +51,19 @@ public class DotGraph {
         System.out.println("Node List: ");
         output.append("Node List: " + "\n");
         for (String node : nodes) {
-            System.out.println(node);
-            output.append(node).append("; " + "\n");
+            System.out.println(node + ";");
             nodeCount++;
         }
-        output.append("Total node count: ").append(nodeCount + "\n");
+        System.out.println("Total node count: " + nodeCount);
         System.out.println("\nEdge List: ");
         output.append("Edge List: " + "\n");
         for (DefaultEdge edge : graph.edgeSet()) {
             String source = graph.getEdgeSource(edge);
             String dest = graph.getEdgeTarget(edge);
-            System.out.println(source + " -> " + dest);
-            output.append(source).append(" -> ").append(dest).append("; " + "\n");
+            System.out.println(source + " -> " + dest + ";");
             edgeCount++;
         }
         System.out.println("Total edge count: " + edgeCount);
-        output.append("Total edge count: ").append(edgeCount + "\n");
         return output.toString();
     }
 
@@ -99,10 +82,10 @@ public class DotGraph {
             graph.addVertex(label);
             nodes.add(label);
             System.out.println("Node added: " + label);
+            return true;
         } else {
             return false;
         }
-        return true;
     }
 
 
@@ -220,6 +203,19 @@ public class DotGraph {
         }
     }
 
+    public static class Path{
+        List<String> nodes;
+
+        //path constructor
+        public Path(){
+            nodes = new Vector<>();
+        }
+
+        public String toString(){
+            return String.join("->", nodes);
+        }
+    }
+
     public enum Algorithm {
         BFS, DFS
     }
@@ -243,33 +239,27 @@ public class DotGraph {
 
     public static Path dfsSearch(String src, String dst) { //dfs
         Path path = new Path();
-
-        Vector<String> startPath = new Vector<>();
-        Vector<Vector<String>> stack = new Vector<>();
-        Vector<String> visited = new Vector<>();
-
-        startPath.add(src);
-        stack.add(startPath);
+        Stack<List<String>> stack = new Stack<>();
+        Set<String> visited = new HashSet<>();
+        stack.push(Collections.singletonList(src));
 
         while(!stack.isEmpty()){
-            Vector<String> currPath = stack.remove(stack.size() - 1);
-            String currNode = currPath.lastElement();
+            List<String> currPath = stack.pop();
+            String currNode = currPath.get(currPath.size() - 1);
 
             if(currNode.equals(dst)){
-                path.nodes = currPath;
+                path.nodes = new ArrayList<>(currPath);
                 System.out.println("Path Found (DFS): " + path.toString());
                 return path;
             }
             if(!visited.contains(currNode)) {
                 visited.add(currNode);
-
                 for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
                     String targetNode = graph.getEdgeTarget(edge);
-
                     if (!visited.contains(targetNode)) {
-                        Vector<String> newPath = new Vector<>(currPath);
+                        List<String> newPath = new ArrayList<>(currPath);
                         newPath.add(targetNode);
-                        stack.add(newPath);
+                        stack.push(newPath);
                     }
                 }
             }
@@ -298,7 +288,6 @@ public class DotGraph {
             }
             if (!visited.contains(currNode)) {
                 visited.add(currNode);
-
                 for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
                     String targetNode = graph.getEdgeTarget(edge);
 
@@ -313,4 +302,5 @@ public class DotGraph {
         System.out.println("Path was not found between " + src + " and " + dst + " using BFS");
         return null;
     }
+
 }
