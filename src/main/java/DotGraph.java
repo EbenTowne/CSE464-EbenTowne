@@ -36,24 +36,15 @@ public class DotGraph {
                 if (parts.length == 2) {
                     String src = parts[0].trim();
                     String dst = parts[1].trim();
-                    //System.out.println(src + " -> " + dst);
-                    if (!nodes.contains(src)) {
-                        nodes.add(src);
-                        graph.addVertex(src);
-                    }
-                    if (!nodes.contains(dst)) {
-                        nodes.add(dst);
-                        graph.addVertex(dst);
-                    }
+                    addNode(src);
+                    addNode(dst);
                     graph.addEdge(src, dst);
                 }
             } else if (line.endsWith(";")) {
                 // Parse standalone nodes
                 String node = line.replace(";", "").trim();
-                if (!nodes.contains(node)) {
-                    nodes.add(node);
-                    graph.addVertex(node);
-                }
+                nodes.add(node);
+                graph.addVertex(node);
             }
         }
         System.out.println("Graph has been successfully parsed");
