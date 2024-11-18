@@ -9,6 +9,7 @@ public class DotGraph {
     public static class Path{
         Vector<String> nodes;
 
+        //path constructor
         public Path(){
             nodes = new Vector<>();
         }
