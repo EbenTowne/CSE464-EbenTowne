@@ -205,12 +205,10 @@ public class DotGraph {
 
     public static class Path{
         List<String> nodes;
-
         //path constructor
         public Path(){
             nodes = new Vector<>();
         }
-
         public String toString(){
             return String.join("->", nodes);
         }
@@ -230,73 +228,67 @@ public class DotGraph {
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
         if (algo == Algorithm.BFS) {
-            return bfsSearch(src, dst);
+            pathTraversal traversedPath = new bfsTraversal();
         } else if (algo == Algorithm.DFS) {
-            return dfsSearch(src, dst);
+            pathTraversal traversedPath = new dfsTraversal();
         }
         return null;
     }
 
-    public static Path dfsSearch(String src, String dst) { //dfs
-        Path path = new Path();
-        Stack<List<String>> stack = new Stack<>();
-        Set<String> visited = new HashSet<>();
-        stack.push(Collections.singletonList(src));
+    abstract static class pathTraversal {
+        public final Path traverse(String src, String dst){
+            Path path = new Path();
+            List<List<String>> list = createList();
+            Set<String> visited = new HashSet<>();
+            list.add(Collections.singletonList(src));
 
-        while(!stack.isEmpty()){
-            List<String> currPath = stack.pop();
-            String currNode = currPath.get(currPath.size() - 1);
-
-            if(currNode.equals(dst)){
-                path.nodes = new ArrayList<>(currPath);
-                System.out.println("Path Found (DFS): " + path.toString());
-                return path;
-            }
-            if(!visited.contains(currNode)) {
-                visited.add(currNode);
-                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
-                    String targetNode = graph.getEdgeTarget(edge);
-                    if (!visited.contains(targetNode)) {
-                        List<String> newPath = new ArrayList<>(currPath);
-                        newPath.add(targetNode);
-                        stack.push(newPath);
+            while (!list.isEmpty()) {
+                List<String> currPath = getNextNode(list);
+                //List<String> currPath = queue.poll();
+                String currNode = currPath.get(currPath.size() - 1);
+                if (currNode.equals(dst)) {
+                    path.nodes = new ArrayList<>(currPath);
+                    System.out.println("Path Found (BFS): " + path.toString());
+                    return path;
+                }
+                if (!visited.contains(currNode)) {
+                    visited.add(currNode);
+                    for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
+                        String targetNode = graph.getEdgeTarget(edge);
+                        if (!visited.contains(targetNode)) {
+                            List<String> newPath = new ArrayList<>(currPath);
+                            newPath.add(targetNode);
+                            list.add(newPath);
+                        }
                     }
                 }
             }
+            System.out.println("Path was not found between " + src + " and " + dst);
+            return null;
         }
-        System.out.println("Path was not found between " + src + " and " + dst + " using DFS");
-        return null;
+        abstract List<List<String>> createList();
+        abstract List<String> getNextNode(List<List<String>> list);
     }
 
-    public static Path bfsSearch(String src, String dst) {
-        Path path = new Path();
-        Queue<List<String>> queue = new LinkedList<>();
-        Set<String> visited = new HashSet<>();
-
-        queue.add(Collections.singletonList(src));
-
-        while (!queue.isEmpty()) {
-            List<String> currPath = queue.poll();
-            String currNode = currPath.get(currPath.size() - 1);
-            if (currNode.equals(dst)) {
-                path.nodes = new ArrayList<>(currPath);
-                System.out.println("Path Found (BFS): " + path.toString());
-                return path;
-            }
-            if (!visited.contains(currNode)) {
-                visited.add(currNode);
-                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
-                    String targetNode = graph.getEdgeTarget(edge);
-                    if (!visited.contains(targetNode)) {
-                        List<String> newPath = new ArrayList<>(currPath);
-                        newPath.add(targetNode);
-                        queue.add(newPath);
-                    }
-                }
-            }
+    static class bfsTraversal extends pathTraversal {
+        @Override
+        public List<List<String>> createList(){
+            return new LinkedList<>();
         }
-        System.out.println("Path was not found between " + src + " and " + dst + " using BFS");
-        return null;
+        @Override
+        public List<String> getNextNode(List<List<String>> list){
+            return ((Queue<List<String>>)list).poll();
+        }
     }
 
+    static class dfsTraversal extends pathTraversal {
+        @Override
+        public List<List<String>> createList(){
+            return new Stack<>();
+        }
+        @Override
+        public List<String> getNextNode(List<List<String>> list){
+            return ((Stack<List<String>>)list).pop();
+        }
+    }
 }

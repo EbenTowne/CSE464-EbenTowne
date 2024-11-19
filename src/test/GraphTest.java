@@ -176,12 +176,12 @@ public class GraphTest {
         //Testing BFS
         DotGraph.Algorithm algo = DotGraph.Algorithm.BFS;
         DotGraph.Path result = DotGraph.GraphSearch(src, dst, algo);
-        assertNotNull("Path between 'a' and 'h' should exist for BFS", result);
+        assertNotNull("Path between 'a' and 'f' should exist for BFS", result);
 
         //Testing DFS
         algo = DotGraph.Algorithm.DFS;
         result = DotGraph.GraphSearch(src, dst, algo);
-        assertNotNull("Path between 'a' and 'h' should exist for DFS", result);
+        assertNotNull("Path between 'a' and 'f' should exist for DFS", result);
 
         //creating new edge to test invalid path
         src = "z";
