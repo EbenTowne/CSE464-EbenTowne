@@ -270,19 +270,16 @@ public class DotGraph {
 
     public static Path bfsSearch(String src, String dst) {
         Path path = new Path();
-        Vector<String> startPath = new Vector<>();
-        Vector<Vector<String>> queue = new Vector<>();
-        Vector<String> visited = new Vector<>();
+        Queue<List<String>> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
 
-        startPath.add(src);
-        queue.add(startPath);
+        queue.add(Collections.singletonList(src));
 
         while (!queue.isEmpty()) {
-            Vector<String> currPath = queue.remove(0);
-            String currNode = currPath.lastElement();
-
+            List<String> currPath = queue.poll();
+            String currNode = currPath.get(currPath.size() - 1);
             if (currNode.equals(dst)) {
-                path.nodes = currPath;
+                path.nodes = new ArrayList<>(currPath);
                 System.out.println("Path Found (BFS): " + path.toString());
                 return path;
             }
@@ -290,9 +287,8 @@ public class DotGraph {
                 visited.add(currNode);
                 for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
                     String targetNode = graph.getEdgeTarget(edge);
-
                     if (!visited.contains(targetNode)) {
-                        Vector<String> newPath = new Vector<>(currPath);
+                        List<String> newPath = new ArrayList<>(currPath);
                         newPath.add(targetNode);
                         queue.add(newPath);
                     }
