@@ -227,12 +227,16 @@ public class DotGraph {
             System.out.println("Destination node '" + dst + "' does not exist");
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
+        pathTraversal traversedPath;
         if (algo == Algorithm.BFS) {
-            pathTraversal traversedPath = new bfsTraversal();
+            traversedPath = new bfsTraversal();
         } else if (algo == Algorithm.DFS) {
-            pathTraversal traversedPath = new dfsTraversal();
+            traversedPath = new dfsTraversal();
         }
-        return null;
+        else{
+            return null;
+        }
+        return traversedPath.traverse(src, dst);
     }
 
     abstract static class pathTraversal {
@@ -266,6 +270,7 @@ public class DotGraph {
             System.out.println("Path was not found between " + src + " and " + dst);
             return null;
         }
+
         abstract List<List<String>> createList();
         abstract List<String> getNextNode(List<List<String>> list);
     }
