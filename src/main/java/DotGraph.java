@@ -300,6 +300,7 @@ public class DotGraph {
 
     //BFS Concrete Class
     static class bfsTraversal extends pathTraversalTemplate {
+        //Queue for BFS
         Queue<List<String>> queue;
 
         //used to create queue (unique to bfs)
@@ -332,6 +333,7 @@ public class DotGraph {
 
 
     static class dfsTraversal extends pathTraversalTemplate {
+        //Stack for DFS
         Stack<List<String>> stack;
 
         //used to create stack (unique to dfs)
