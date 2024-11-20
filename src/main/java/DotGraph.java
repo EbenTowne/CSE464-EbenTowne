@@ -230,10 +230,12 @@ public class DotGraph {
         pathTraversal traversedPath;
         if (algo == Algorithm.BFS) {
             traversedPath = new bfsTraversal();
-        } else if (algo == Algorithm.DFS) {
+        }
+        else if (algo == Algorithm.DFS) {
             traversedPath = new dfsTraversal();
         }
-        else{
+        else
+        {
             return null;
         }
         return traversedPath.traverse(src, dst);
@@ -242,27 +244,31 @@ public class DotGraph {
     abstract static class pathTraversal {
         public final Path traverse(String src, String dst){
             Path path = new Path();
-            List<List<String>> list = createList();
+            createLists();
             Set<String> visited = new HashSet<>();
-            list.add(Collections.singletonList(src));
 
-            while (!list.isEmpty()) {
-                List<String> currPath = getNextNode(list);
-                //List<String> currPath = queue.poll();
+            List<String> startPath = new ArrayList<>();
+            startPath.add(src);
+            addPath(startPath);
+
+            while (!traversalEmpty()) {
+                List<String> currPath = getNextNode();
                 String currNode = currPath.get(currPath.size() - 1);
+
                 if (currNode.equals(dst)) {
                     path.nodes = new ArrayList<>(currPath);
-                    System.out.println("Path Found (BFS): " + path.toString());
+                    System.out.println("Path Found: " + path.toString());
                     return path;
                 }
+
                 if (!visited.contains(currNode)) {
                     visited.add(currNode);
                     for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
                         String targetNode = graph.getEdgeTarget(edge);
-                        if (!visited.contains(targetNode)) {
+                        if(!visited.contains(targetNode)){
                             List<String> newPath = new ArrayList<>(currPath);
                             newPath.add(targetNode);
-                            list.add(newPath);
+                            addPath(newPath);
                         }
                     }
                 }
@@ -271,29 +277,72 @@ public class DotGraph {
             return null;
         }
 
-        abstract List<List<String>> createList();
-        abstract List<String> getNextNode(List<List<String>> list);
+        abstract void createLists();
+        abstract void addPath(List<String> path);
+        abstract boolean traversalEmpty();
+        abstract List<String> getNextNode();
     }
 
     static class bfsTraversal extends pathTraversal {
+        Queue<List<String>> queue;
+
+        //used to create queue (unique to bfs)
         @Override
-        public List<List<String>> createList(){
-            return new LinkedList<>();
+        public void createLists(){
+            queue = new LinkedList<>();
         }
+
+        //used to update bfs path (unique given the use of queue)
         @Override
-        public List<String> getNextNode(List<List<String>> list){
-            return ((Queue<List<String>>)list).poll();
+        public void addPath(List<String> path) {
+            queue.add(path);
+        }
+
+        //check if queue is empty (unique to bfs)
+        @Override
+        public boolean traversalEmpty() {
+            if (queue.isEmpty()) {
+                return true;
+            }
+            return false;
+        }
+
+        //get next node (unique given the use of queue)
+        @Override
+        public List<String> getNextNode(){
+            return queue.poll();
         }
     }
 
     static class dfsTraversal extends pathTraversal {
+        Stack<List<String>> stack;
+
+        //used to create stack (unique to dfs)
         @Override
-        public List<List<String>> createList(){
-            return new Stack<>();
+        public void createLists(){
+            stack = new Stack<>();
         }
+
+        //updates dfs path (unique given the use of a stack)
         @Override
-        public List<String> getNextNode(List<List<String>> list){
-            return ((Stack<List<String>>)list).pop();
+        public void addPath(List<String> path) {
+            stack.push(path);
+        }
+
+        //check if stack is empty (unique to dfs)
+        @Override
+        public boolean traversalEmpty() {
+            if (stack.isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        //get next node in stack (unique to dfs)
+        @Override
+        public List<String> getNextNode(){
+            return stack.pop();
         }
     }
 }
