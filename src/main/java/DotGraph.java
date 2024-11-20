@@ -218,7 +218,13 @@ public class DotGraph {
         BFS, DFS
     }
 
-    public static Path GraphSearch(String src, String dst, Algorithm algo){
+    //Interface for strategy design pattern
+    interface TraverseStrategy {
+        Path traverse(String src, String dst);
+    }
+
+    //Context Class for strategy design pattern
+    public static Path GraphSearch(String src, String dst, Algorithm algo) {
         if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
@@ -227,40 +233,47 @@ public class DotGraph {
             System.out.println("Destination node '" + dst + "' does not exist");
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
-        pathTraversal traversedPath;
+        //Reference to strategy object
+        TraverseStrategy traverseStrategy;
         if (algo == Algorithm.BFS) {
-            traversedPath = new bfsTraversal();
+            //employ traversal strategy that uses the bfs Traversal Template
+            traverseStrategy = new bfsTraversal();
         }
         else if (algo == Algorithm.DFS) {
-            traversedPath = new dfsTraversal();
+            //employ traversal strategy that uses the dfs Traversal Template
+            traverseStrategy= new dfsTraversal();
         }
         else
         {
             return null;
         }
-        return traversedPath.traverse(src, dst);
+        return traverseStrategy.traverse(src, dst);
     }
 
-    abstract static class pathTraversal {
+    //abstract class that defines the template method
+    //concrete strategy for strategy design pattern
+    abstract static class pathTraversalTemplate implements TraverseStrategy {
+        //Template Method
         public final Path traverse(String src, String dst){
             Path path = new Path();
-            createLists();
+            createLists(); //Create Queue/Stack
             Set<String> visited = new HashSet<>();
-
             List<String> startPath = new ArrayList<>();
+
             startPath.add(src);
+            //Create Initial DFS/BFS Path
             addPath(startPath);
+            //check if stack/queue is empty
 
             while (!traversalEmpty()) {
+                //Get next node (pop for dfs and poll for bfs)
                 List<String> currPath = getNextNode();
                 String currNode = currPath.get(currPath.size() - 1);
-
                 if (currNode.equals(dst)) {
                     path.nodes = new ArrayList<>(currPath);
                     System.out.println("Path Found: " + path.toString());
                     return path;
                 }
-
                 if (!visited.contains(currNode)) {
                     visited.add(currNode);
                     for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
@@ -268,6 +281,7 @@ public class DotGraph {
                         if(!visited.contains(targetNode)){
                             List<String> newPath = new ArrayList<>(currPath);
                             newPath.add(targetNode);
+                            //Update DFS/BFS path to new path
                             addPath(newPath);
                         }
                     }
@@ -277,13 +291,15 @@ public class DotGraph {
             return null;
         }
 
+        //Abstract Methods for template design pattern
         abstract void createLists();
         abstract void addPath(List<String> path);
         abstract boolean traversalEmpty();
         abstract List<String> getNextNode();
     }
 
-    static class bfsTraversal extends pathTraversal {
+    //BFS Concrete Class
+    static class bfsTraversal extends pathTraversalTemplate {
         Queue<List<String>> queue;
 
         //used to create queue (unique to bfs)
@@ -314,7 +330,8 @@ public class DotGraph {
         }
     }
 
-    static class dfsTraversal extends pathTraversal {
+
+    static class dfsTraversal extends pathTraversalTemplate {
         Stack<List<String>> stack;
 
         //used to create stack (unique to dfs)
