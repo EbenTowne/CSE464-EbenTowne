@@ -1,19 +1,10 @@
-digraph { //updated
-    a;
-    b;
-    c;
-    d;
-    e;
-    f;
-    g;
-    h;
+digraph {
     a -> b;
-    a -> c;
-    a -> d;
-    b -> e;
-    c -> f;
-    d -> g;
+    b -> c;
+    c -> d;
+    d -> a;
+    a -> e;
+    e -> g;
+    f -> h;
     g -> h;
-    h -> f;
-    e -> f;
 }
