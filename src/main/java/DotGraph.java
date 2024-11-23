@@ -215,7 +215,7 @@ public class DotGraph {
     }
 
     public enum Algorithm {
-        BFS, DFS
+        BFS, DFS, Random
     }
 
     //Interface for strategy design pattern
@@ -241,7 +241,10 @@ public class DotGraph {
         }
         else if (algo == Algorithm.DFS) {
             //employ traversal strategy that uses the dfs Traversal Template
-            traverseStrategy= new dfsTraversal();
+            traverseStrategy = new dfsTraversal();
+        }
+        else if (algo == Algorithm.Random){
+            traverseStrategy = new randomTraversal();
         }
         else
         {
@@ -254,7 +257,7 @@ public class DotGraph {
     //concrete strategy for strategy design pattern
     abstract static class pathTraversalTemplate implements TraverseStrategy {
         //Template Method
-        public final Path traverse(String src, String dst){
+        public Path traverse(String src, String dst){
             Path path = new Path();
             createLists(); //Create Queue/Stack
             Set<String> visited = new HashSet<>();
@@ -278,10 +281,9 @@ public class DotGraph {
                     visited.add(currNode);
                     for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
                         String targetNode = graph.getEdgeTarget(edge);
-                        if(!visited.contains(targetNode)){
+                        if (!visited.contains(targetNode)) {
                             List<String> newPath = new ArrayList<>(currPath);
                             newPath.add(targetNode);
-                            //Update DFS/BFS path to new path
                             addPath(newPath);
                         }
                     }
@@ -362,6 +364,59 @@ public class DotGraph {
         @Override
         public List<String> getNextNode(){
             return stack.pop();
+        }
+    }
+
+    static class randomTraversal extends pathTraversalTemplate {
+        //Use random to randomly select neighboring node
+        Random random;
+
+        @Override
+        public Path traverse(String src, String dst){
+            random = new Random();
+            Path path = new Path();
+            Set<String> visited = new HashSet<>();
+            path.nodes.add(src);
+            visited.add(src);
+            String currNode = src;
+
+            while(!currNode.equals(dst)){
+                Set<DefaultEdge> edges = graph.outgoingEdgesOf(currNode);
+                List<String> neighbors = new ArrayList<>();
+                for (DefaultEdge edge : edges) {
+                    String targetNode = graph.getEdgeTarget(edge);
+                    if(!visited.contains(targetNode)){
+                        neighbors.add(targetNode);
+                    }
+                }
+                if(neighbors.isEmpty()){
+                    break;
+                }
+                currNode = neighbors.get(random.nextInt(neighbors.size()));
+                path.nodes.add(currNode);
+                visited.add(currNode);
+            }
+            System.out.println("Path found: " + path.toString());
+            return path;
+        }
+
+        @Override
+        void createLists() {
+            random = new Random();
+        }
+
+        @Override
+        void addPath(List<String> path) {
+        }
+
+        @Override
+        boolean traversalEmpty() {
+            return false;
+        }
+
+        @Override
+        List<String> getNextNode() {
+            return null;
         }
     }
 }

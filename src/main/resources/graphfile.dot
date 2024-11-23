@@ -1,10 +1,19 @@
 digraph {
+    a;
+    b;
+    c;
+    d;
+    e;
+    f;
+    g;
+    h;
     a -> b;
-    b -> c;
-    c -> d;
-    d -> a;
-    a -> e;
-    e -> g;
-    f -> h;
+    a -> c;
+    a -> d;
+    b -> e;
+    c -> f;
+    d -> g;
     g -> h;
+    h -> f;
+    e -> f;
 }

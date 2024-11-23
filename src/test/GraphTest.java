@@ -30,7 +30,7 @@ public class GraphTest {
         int totalNodes = DotGraph.getNodes();
         assertEquals(8, totalNodes);
         int totalEdges = DotGraph.getEdges();
-        assertEquals(8, totalEdges);
+        assertEquals(9, totalEdges);
     }
 
     @Test
@@ -81,14 +81,14 @@ public class GraphTest {
     public void addEdgeTest(){
         //Add edge with existing nodes
         String src = "b";
-        String dst = "g";
+        String dst = "c";
         boolean edgeAdded = DotGraph.addEdge(src, dst);
         assertTrue("Edge added was not added.", edgeAdded);
 
 
         //Add edge with new nodes
-        src = "g";
-        dst = "i";
+        src = "f";
+        dst = "g";
         edgeAdded = DotGraph.addEdge(src, dst);
         assertTrue("Edge added was not added.", edgeAdded);
     }
@@ -171,31 +171,49 @@ public class GraphTest {
     public void GraphSearchTest() throws IOException { //updated
         //successful bfs test
         String src = "a";
-        String dst = "c";
+        String dst = "f";
 
         //Testing BFS
         DotGraph.Algorithm algo = DotGraph.Algorithm.BFS;
         DotGraph.Path result = DotGraph.GraphSearch(src, dst, algo);
-        assertNotNull("Path between 'a' and 'c' should exist for BFS", result);
+        assertNotNull("Path between 'a' and 'f' should exist for BFS", result);
 
         //Testing DFS
         algo = DotGraph.Algorithm.DFS;
         result = DotGraph.GraphSearch(src, dst, algo);
-        assertNotNull("Path between 'a' and 'c' should exist for DFS", result);
+        assertNotNull("Path between 'a' and 'f' should exist for DFS", result);
+
+        //creating new edge to test invalid path
+        src = "z";
+        dst = "a";
+        DotGraph.addEdge(src, dst);
 
         //path does not exist
-        src = "a";
-        dst = "f";
+        src = "d";
+        dst = "a";
 
         //Testing BFS for invalid path
         algo = DotGraph.Algorithm.BFS;
-        DotGraph.Path result2 = DotGraph.GraphSearch(src, dst, algo);
-        assertNull("Path between 'a' and 'f' should not exist", result2);
+        result = DotGraph.GraphSearch(src, dst, algo);
+        assertNull("Path between 'd' and 'a' should not exist", result);
 
         //Testing DFS for invalid path
         algo = DotGraph.Algorithm.DFS;
-        DotGraph.Path result3 = DotGraph.GraphSearch(src, dst, algo);
-        assertNull("Path between 'a' and 'f' should not exist", result3);
+        result = DotGraph.GraphSearch(src, dst, algo);
+        assertNull("Path between 'd' and 'a' should not exist", result);
+
+        file = "graphfile.dot"; //resource file
+        filepath = getClass().getResource(file).getPath();
+        DotGraph.parseGraph(filepath);
+
+        src = "a";
+        dst = "c";
+        algo = DotGraph.Algorithm.Random;
+        System.out.println("Starting random walk");
+        for(int i = 0; i < 5; i++){
+            result = DotGraph.GraphSearch(src, dst, algo);
+            assertNull("Path between 'a' and 'c' should not exist", result);
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
