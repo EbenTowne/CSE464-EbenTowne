@@ -220,6 +220,7 @@ public class DotGraph {
            result += "Node{" + nodes.get(nodes.size()-1) + "}]}";
            return result;
        }
+    }
 
 
     public enum Algorithm {
@@ -444,5 +445,4 @@ public class DotGraph {
            return null;
        }
    }
-}
 }
