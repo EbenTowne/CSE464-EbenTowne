@@ -5,27 +5,10 @@ import java.io.*;
 import java.util.*;
 
 public class DotGraph {
+    private static DefaultDirectedGraph<String, DefaultEdge> graph;
+    private static Vector<String> nodes;
 
-    public static class Path{
-        Vector<String> nodes;
-
-        public Path(){
-            nodes = new Vector<>();
-        }
-
-        public String toString(){
-            return String.join("->", nodes);
-        }
-    }
-
-    public enum Algorithm {
-        BFS, DFS
-    }
-
-    static DefaultDirectedGraph<String, DefaultEdge> graph;
-    static Vector<String> nodes;
-
-    public static DefaultDirectedGraph<String, DefaultEdge> parseGraph(String filename) throws IOException {
+    public static void parseGraph(String filename) throws IOException {
         initializeGraph();
         BufferedReader reader = new BufferedReader(new FileReader(filename));
         String line;
@@ -39,30 +22,19 @@ public class DotGraph {
                 if (parts.length == 2) {
                     String src = parts[0].trim();
                     String dst = parts[1].trim();
-                    //System.out.println(src + " -> " + dst);
-                    if (!nodes.contains(src)) {
-                        nodes.add(src);
-                        graph.addVertex(src);
-                    }
-                    if (!nodes.contains(dst)) {
-                        nodes.add(dst);
-                        graph.addVertex(dst);
-                    }
+                    addNode(src);
+                    addNode(dst);
                     graph.addEdge(src, dst);
                 }
             } else if (line.endsWith(";")) {
                 // Parse standalone nodes
                 String node = line.replace(";", "").trim();
-                if (!nodes.contains(node)) {
-                    nodes.add(node);
-                    graph.addVertex(node);
-                    //System.out.println(node);
-                }
+                nodes.add(node);
+                graph.addVertex(node);
             }
         }
         System.out.println("Graph has been successfully parsed");
         reader.close();
-        return graph;
     }
 
     private static void initializeGraph() {
@@ -79,22 +51,19 @@ public class DotGraph {
         System.out.println("Node List: ");
         output.append("Node List: " + "\n");
         for (String node : nodes) {
-            System.out.println(node);
-            output.append(node).append("; " + "\n");
+            System.out.println(node + ";");
             nodeCount++;
         }
-        output.append("Total node count: ").append(nodeCount + "\n");
+        System.out.println("Total node count: " + nodeCount);
         System.out.println("\nEdge List: ");
         output.append("Edge List: " + "\n");
         for (DefaultEdge edge : graph.edgeSet()) {
             String source = graph.getEdgeSource(edge);
             String dest = graph.getEdgeTarget(edge);
-            System.out.println(source + " -> " + dest);
-            output.append(source).append(" -> ").append(dest).append("; " + "\n");
+            System.out.println(source + " -> " + dest + ";");
             edgeCount++;
         }
         System.out.println("Total edge count: " + edgeCount);
-        output.append("Total edge count: ").append(edgeCount + "\n");
         return output.toString();
     }
 
@@ -113,39 +82,33 @@ public class DotGraph {
             graph.addVertex(label);
             nodes.add(label);
             System.out.println("Node added: " + label);
+            return true;
         } else {
             return false;
         }
-        return true;
     }
 
 
-    public static boolean addNodes(String[] labels) {
+    public static void addNodes(String[] labels) {
         for(String label : labels){
             boolean x = addNode(label);
-            if(x == false){
-                return false;
+            if(!x){
+                return;
             }
         }
         System.out.println("List of nodes have been added successfully");
-        return true;
     }
 
-    public static int addEdge(String src, String dst){
+    public static boolean addEdge(String src, String dst){
         if(graph.containsEdge(src, dst)){
-            return 1;
+            return false;
         }
-        if(!containsNode(src)){
-            addNode(src);
-            System.out.println("Source node '" + src + "' has been added");
-        }
-        if(!containsNode(dst)){
-            addNode(dst);
-            System.out.println("Destination node '" + dst + "' has been added");
-        }
+        addNode(src);
+        addNode(dst);
+        System.out.println("Source node '" + src + "' and destination node '" + dst + "' have both been added");
         graph.addEdge(src, dst);
         System.out.println("Edge '" + src + "->" + dst + "' has been added");
-        return 0;
+        return true;
     }
 
     public static void outputDOTGraph(String filepath) throws IOException {
@@ -240,7 +203,28 @@ public class DotGraph {
         }
     }
 
-    public static Path GraphSearch(String src, String dst, Algorithm algo){
+    public static class Path{
+        List<String> nodes;
+        //path constructor
+        public Path(){
+            nodes = new Vector<>();
+        }
+        public String toString(){
+            return String.join("->", nodes);
+        }
+    }
+
+    public enum Algorithm {
+        BFS, DFS, Random
+    }
+
+    //Interface for strategy design pattern
+    interface TraverseStrategy {
+        Path traverse(String src, String dst);
+    }
+
+    //Context Class for strategy design pattern
+    public static Path GraphSearch(String src, String dst, Algorithm algo) {
         if(!graph.containsVertex(src)){ //if src does not exist
             System.out.println("Source node '" + src + "' does not exist");
             throw new IllegalArgumentException("Source node '" + src + "' does not exist in the graph");
@@ -249,84 +233,190 @@ public class DotGraph {
             System.out.println("Destination node '" + dst + "' does not exist");
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
+        //Reference to strategy object
+        TraverseStrategy traverseStrategy;
         if (algo == Algorithm.BFS) {
-            return bfsSearch(src, dst);
-        } else if (algo == Algorithm.DFS) {
-            return dfsSearch(src, dst);
+            //employ traversal strategy that uses the bfs Traversal Template
+            traverseStrategy = new bfsTraversal();
         }
-        return null;
+        else if (algo == Algorithm.DFS) {
+            //employ traversal strategy that uses the dfs Traversal Template
+            traverseStrategy = new dfsTraversal();
+        }
+        else if (algo == Algorithm.Random){
+            traverseStrategy = new randomTraversal();
+        }
+        else
+        {
+            return null;
+        }
+        return traverseStrategy.traverse(src, dst);
     }
 
-    public static Path dfsSearch(String src, String dst) { //dfs
-        Path path = new Path();
+    //abstract class that defines the template method
+    //concrete strategy for strategy design pattern
+    abstract static class pathTraversalTemplate implements TraverseStrategy {
+        //Template Method
+        public Path traverse(String src, String dst){
+            Path path = new Path();
+            createLists(); //Create Queue/Stack
+            Set<String> visited = new HashSet<>();
+            List<String> startPath = new ArrayList<>();
 
-        Vector<String> startPath = new Vector<>();
-        Vector<Vector<String>> stack = new Vector<>();
-        Vector<String> visited = new Vector<>();
+            startPath.add(src);
+            //Create Initial DFS/BFS Path
+            addPath(startPath);
+            //check if stack/queue is empty
 
-        startPath.add(src);
-        stack.add(startPath);
-
-        while(!stack.isEmpty()){
-            Vector<String> currPath = stack.remove(stack.size() - 1);
-            String currNode = currPath.lastElement();
-
-            if(currNode.equals(dst)){
-                path.nodes = currPath;
-                System.out.println("Path Found (DFS): " + path.toString());
-                return path;
-            }
-            if(!visited.contains(currNode)) {
-                visited.add(currNode);
-
-                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
-                    String targetNode = graph.getEdgeTarget(edge);
-
-                    if (!visited.contains(targetNode)) {
-                        Vector<String> newPath = new Vector<>(currPath);
-                        newPath.add(targetNode);
-                        stack.add(newPath);
+            while (!traversalEmpty()) {
+                //Get next node (pop for dfs and poll for bfs)
+                List<String> currPath = getNextNode();
+                String currNode = currPath.get(currPath.size() - 1);
+                if (currNode.equals(dst)) {
+                    path.nodes = new ArrayList<>(currPath);
+                    System.out.println("Path Found: " + path.toString());
+                    return path;
+                }
+                if (!visited.contains(currNode)) {
+                    visited.add(currNode);
+                    for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
+                        String targetNode = graph.getEdgeTarget(edge);
+                        if (!visited.contains(targetNode)) {
+                            List<String> newPath = new ArrayList<>(currPath);
+                            newPath.add(targetNode);
+                            addPath(newPath);
+                        }
                     }
                 }
             }
+            System.out.println("Path was not found between " + src + " and " + dst);
+            return null;
         }
-        System.out.println("Path was not found between " + src + " and " + dst + " using DFS");
-        return null;
+
+        //Abstract Methods for template design pattern
+        abstract void createLists();
+        abstract void addPath(List<String> path);
+        abstract boolean traversalEmpty();
+        abstract List<String> getNextNode();
     }
 
-    public static Path bfsSearch(String src, String dst) {
-        Path path = new Path();
-        Vector<String> startPath = new Vector<>();
-        Vector<Vector<String>> queue = new Vector<>();
-        Vector<String> visited = new Vector<>();
+    //BFS Concrete Class
+    static class bfsTraversal extends pathTraversalTemplate {
+        //Queue for BFS
+        Queue<List<String>> queue;
 
-        startPath.add(src);
-        queue.add(startPath);
+        //used to create queue (unique to bfs)
+        @Override
+        public void createLists(){
+            queue = new LinkedList<>();
+        }
 
-        while (!queue.isEmpty()) {
-            Vector<String> currPath = queue.remove(0);
-            String currNode = currPath.lastElement();
+        //used to update bfs path (unique given the use of queue)
+        @Override
+        public void addPath(List<String> path) {
+            queue.add(path);
+        }
 
-            if (currNode.equals(dst)) {
-                path.nodes = currPath;
-                System.out.println("Path Found (BFS): " + path.toString());
-                return path;
+        //check if queue is empty (unique to bfs)
+        @Override
+        public boolean traversalEmpty() {
+            if (queue.isEmpty()) {
+                return true;
             }
-            if (!visited.contains(currNode)) {
-                visited.add(currNode);
+            return false;
+        }
 
-                for (DefaultEdge edge : graph.outgoingEdgesOf(currNode)) {
-                    String targetNode = graph.getEdgeTarget(edge);
+        //get next node (unique given the use of queue)
+        @Override
+        public List<String> getNextNode(){
+            return queue.poll();
+        }
+    }
 
-                    if (!visited.contains(targetNode)) {
-                        Vector<String> newPath = new Vector<>(currPath);
-                        newPath.add(targetNode);
-                        queue.add(newPath);
-                    }
-                }
+
+    static class dfsTraversal extends pathTraversalTemplate {
+        //Stack for DFS
+        Stack<List<String>> stack;
+
+        //used to create stack (unique to dfs)
+        @Override
+        public void createLists(){
+            stack = new Stack<>();
+        }
+
+        //updates dfs path (unique given the use of a stack)
+        @Override
+        public void addPath(List<String> path) {
+            stack.push(path);
+        }
+
+        //check if stack is empty (unique to dfs)
+        @Override
+        public boolean traversalEmpty() {
+            if (stack.isEmpty()) {
+                return true;
+            } else {
+                return false;
             }
         }
-        System.out.println("Path was not found between " + src + " and " + dst + " using BFS");
-        return null;
+
+        //get next node in stack (unique to dfs)
+        @Override
+        public List<String> getNextNode(){
+            return stack.pop();
+        }
+    }
+
+    static class randomTraversal extends pathTraversalTemplate {
+        //Use random to randomly select neighboring node
+        Random random;
+
+        @Override
+        public Path traverse(String src, String dst){
+            random = new Random();
+            Path path = new Path();
+            Set<String> visited = new HashSet<>();
+            path.nodes.add(src);
+            visited.add(src);
+            String currNode = src;
+
+            while(!currNode.equals(dst)){
+                Set<DefaultEdge> edges = graph.outgoingEdgesOf(currNode);
+                List<String> neighbors = new ArrayList<>();
+                for (DefaultEdge edge : edges) {
+                    String targetNode = graph.getEdgeTarget(edge);
+                    if(!visited.contains(targetNode)){
+                        neighbors.add(targetNode);
+                    }
+                }
+                if(neighbors.isEmpty()){
+                    break;
+                }
+                currNode = neighbors.get(random.nextInt(neighbors.size()));
+                path.nodes.add(currNode);
+                visited.add(currNode);
+            }
+            System.out.println("Path found: " + path.toString());
+            return path;
+        }
+
+        @Override
+        void createLists() {
+            random = new Random();
+        }
+
+        @Override
+        void addPath(List<String> path) {
+        }
+
+        @Override
+        boolean traversalEmpty() {
+            return false;
+        }
+
+        @Override
+        List<String> getNextNode() {
+            return null;
+        }
     }
 }
