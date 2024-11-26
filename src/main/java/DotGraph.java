@@ -204,15 +204,24 @@ public class DotGraph {
     }
 
     public static class Path{
-        List<String> nodes;
-        //path constructor
-        public Path(){
-            nodes = new Vector<>();
-        }
-        public String toString(){
-            return String.join("->", nodes);
-        }
+       List<String> nodes;
+       //path constructor
+       public Path(){
+           this.nodes = new Vector<>();
+       }
+       public String toString(){
+           return String.join("->", nodes);
+       }
+       public String randomToString(){
+           String result = "Path{nodes=[";
+           for(int i = 0; i < nodes.size()-1; i++){
+               result += "Node{" + nodes.get(i) + "},";
+           }
+           result += "Node{" + nodes.get(nodes.size()-1) + "}]}";
+           return result;
+       }
     }
+
 
     public enum Algorithm {
         BFS, DFS, Random
@@ -368,55 +377,72 @@ public class DotGraph {
     }
 
     static class randomTraversal extends pathTraversalTemplate {
-        //Use random to randomly select neighboring node
-        Random random;
+       //Use random to randomly select neighboring node
+       Random random;
 
-        @Override
-        public Path traverse(String src, String dst){
-            random = new Random();
-            Path path = new Path();
-            Set<String> visited = new HashSet<>();
-            path.nodes.add(src);
-            visited.add(src);
-            String currNode = src;
 
-            while(!currNode.equals(dst)){
-                Set<DefaultEdge> edges = graph.outgoingEdgesOf(currNode);
-                List<String> neighbors = new ArrayList<>();
-                for (DefaultEdge edge : edges) {
-                    String targetNode = graph.getEdgeTarget(edge);
-                    if(!visited.contains(targetNode)){
-                        neighbors.add(targetNode);
-                    }
-                }
-                if(neighbors.isEmpty()){
-                    break;
-                }
-                currNode = neighbors.get(random.nextInt(neighbors.size()));
-                path.nodes.add(currNode);
-                visited.add(currNode);
-            }
-            System.out.println("Path found: " + path.toString());
-            return path;
-        }
+       @Override
+       public Path traverse(String src, String dst){
+           random = new Random();
+           Path path = new Path();
+           while(true){
+               //clear path nodes for multiple testings
+               path.nodes.clear();
+               //add source node to path
+               path.nodes.add(src);
+               System.out.println("visiting " + path.randomToString());
+               String currNode = src;
 
-        @Override
-        void createLists() {
-            random = new Random();
-        }
 
-        @Override
-        void addPath(List<String> path) {
-        }
+               //loop indefinitely
+               while(!currNode.equals(dst)){
+                   Set<DefaultEdge> edges = graph.outgoingEdgesOf(currNode);
+                   List<String> neighbors = new ArrayList<>();
 
-        @Override
-        boolean traversalEmpty() {
-            return false;
-        }
 
-        @Override
-        List<String> getNextNode() {
-            return null;
-        }
-    }
+                   //add all neighbors for the current node to the list of neighbors
+                   for (DefaultEdge edge : edges) {
+                       String targetNode = graph.getEdgeTarget(edge);
+                       neighbors.add(targetNode);
+                   }
+                   //if there are no neighbors (cannot go further), reset the search
+                   if(neighbors.isEmpty()){
+                       break;
+                   }
+                   //select a random neighbor from the list of neighbors
+                   currNode = neighbors.get(random.nextInt(neighbors.size()));
+                   path.nodes.add(currNode);
+                   System.out.println("visiting " + path.randomToString() + " ");
+                   //destination node is found
+                   if(currNode.equals(dst)){
+                       System.out.println(path.randomToString());
+                       return path;
+                   }
+               }
+           }
+       }
+
+
+       @Override
+       void createLists() {
+           random = new Random();
+       }
+
+
+       @Override
+       void addPath(List<String> path) {
+       }
+
+
+       @Override
+       boolean traversalEmpty() {
+           return false;
+       }
+
+
+       @Override
+       List<String> getNextNode() {
+           return null;
+       }
+   }
 }
