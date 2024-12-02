@@ -57,7 +57,7 @@ public class DotGraph {
         }
         System.out.println("Total node count: " + nodeCount);
         System.out.println("\nEdge List: ");
-        output.append("Edge List: "\n");
+        output.append("Edge List: \n");
         for (DefaultEdge edge : graph.edgeSet()) {
             String source = graph.getEdgeSource(edge);
             String dest = graph.getEdgeTarget(edge);
