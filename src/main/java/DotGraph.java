@@ -83,7 +83,7 @@ public class DotGraph {
         if (!graph.containsVertex(label)) {
             graph.addVertex(label);
             nodes.add(label);
-            System.out.println("Adding node: " + label);
+            System.out.println("\nAdding node: " + label);
             return true;
         } else {
             return false;
@@ -108,7 +108,7 @@ public class DotGraph {
         addNode(src);
         addNode(dst);
         graph.addEdge(src, dst);
-        System.out.println("Added Edge: " + src + " -> " + dst);
+        System.out.println("\nAdded Edge: " + src + " -> " + dst);
         return true;
     }
 
