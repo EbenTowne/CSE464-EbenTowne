@@ -33,14 +33,14 @@ public class DotGraph {
                 graph.addVertex(node);
             }
         }
-        System.out.println("Graph has been successfully parsed");
+        System.out.println("[Graph successfully parsed]");
         reader.close();
     }
 
     private static void initializeGraph() {
         graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         nodes = new Vector<>();
-        System.out.println("\nGraph initialized");
+        System.out.println("\n[Graph initialized]");
     }
 
     public static String graphtoString(){
@@ -49,18 +49,20 @@ public class DotGraph {
         StringBuilder output = new StringBuilder();
 
         System.out.println("Node List: ");
-        output.append("Node List: " + "\n");
+        output.append("Node List: \n");
         for (String node : nodes) {
             System.out.println(node + ";");
+            output.append(node).append(";\n");
             nodeCount++;
         }
         System.out.println("Total node count: " + nodeCount);
         System.out.println("\nEdge List: ");
-        output.append("Edge List: " + "\n");
+        output.append("Edge List: "\n");
         for (DefaultEdge edge : graph.edgeSet()) {
             String source = graph.getEdgeSource(edge);
             String dest = graph.getEdgeTarget(edge);
             System.out.println(source + " -> " + dest + ";");
+            output.append(source).append(" -> ").append(dest).append(";\n");
             edgeCount++;
         }
         System.out.println("Total edge count: " + edgeCount);
@@ -81,7 +83,7 @@ public class DotGraph {
         if (!graph.containsVertex(label)) {
             graph.addVertex(label);
             nodes.add(label);
-            System.out.println("Node added: " + label);
+            System.out.println("Adding node: " + label);
             return true;
         } else {
             return false;
@@ -96,7 +98,7 @@ public class DotGraph {
                 return;
             }
         }
-        System.out.println("List of nodes have been added successfully");
+        System.out.println("[List of nodes added successfully]");
     }
 
     public static boolean addEdge(String src, String dst){
@@ -105,9 +107,8 @@ public class DotGraph {
         }
         addNode(src);
         addNode(dst);
-        System.out.println("Source node '" + src + "' and destination node '" + dst + "' have both been added");
         graph.addEdge(src, dst);
-        System.out.println("Edge '" + src + "->" + dst + "' has been added");
+        System.out.println("Added Edge: " + src + " -> " + dst);
         return true;
     }
 
@@ -169,9 +170,9 @@ public class DotGraph {
 
     public static boolean removeNode(String label) {
         if(graph.containsVertex(label)){
-            System.out.println("Removing node " + label);
             graph.removeVertex(label);
             nodes.remove(label);
+            System.out.println("Removed node: " + label);
             return true;
         }
         else{
@@ -193,8 +194,8 @@ public class DotGraph {
 
     public static boolean removeEdge(String srcLabel, String dstLabel){
         if(graph.containsEdge(srcLabel, dstLabel)){
-            System.out.println("Removing edge " + srcLabel + "->" + dstLabel);
             graph.removeEdge(srcLabel, dstLabel);
+            System.out.println("Removed edge: " + srcLabel + "->" + dstLabel);
             return true;
         }
         else{
@@ -205,7 +206,7 @@ public class DotGraph {
 
     public static class Path{
        List<String> nodes;
-       //path constructor
+        
        public Path(){
            this.nodes = new Vector<>();
        }
@@ -242,21 +243,23 @@ public class DotGraph {
             System.out.println("Destination node '" + dst + "' does not exist");
             throw new IllegalArgumentException("Destination node '" + dst + "' does not exist in the graph");
         }
-        //Reference to strategy object
+        
         TraverseStrategy traverseStrategy;
         if (algo == Algorithm.BFS) {
-            //employ traversal strategy that uses the bfs Traversal Template
             traverseStrategy = new bfsTraversal();
+            System.out.println("Using BFS Strategy");
         }
         else if (algo == Algorithm.DFS) {
-            //employ traversal strategy that uses the dfs Traversal Template
             traverseStrategy = new dfsTraversal();
+            System.out.println("Using BFS Strategy");
         }
         else if (algo == Algorithm.Random){
             traverseStrategy = new randomTraversal();
+            System.out.println("Using Random Strategy");
         }
         else
         {
+            System.out.println("Error: Invalid algo!");
             return null;
         }
         return traverseStrategy.traverse(src, dst);
@@ -273,12 +276,9 @@ public class DotGraph {
             List<String> startPath = new ArrayList<>();
 
             startPath.add(src);
-            //Create Initial DFS/BFS Path
             addPath(startPath);
-            //check if stack/queue is empty
 
             while (!traversalEmpty()) {
-                //Get next node (pop for dfs and poll for bfs)
                 List<String> currPath = getNextNode();
                 String currNode = currPath.get(currPath.size() - 1);
                 if (currNode.equals(dst)) {
@@ -298,7 +298,7 @@ public class DotGraph {
                     }
                 }
             }
-            System.out.println("Path was not found between " + src + " and " + dst);
+            System.out.println("Error: Path was not found between " + src + " and " + dst + "!");
             return null;
         }
 
@@ -405,10 +405,12 @@ public class DotGraph {
                        String targetNode = graph.getEdgeTarget(edge);
                        neighbors.add(targetNode);
                    }
+                   
                    //if there are no neighbors (cannot go further), reset the search
                    if(neighbors.isEmpty()){
                        break;
                    }
+                   
                    //select a random neighbor from the list of neighbors
                    currNode = neighbors.get(random.nextInt(neighbors.size()));
                    path.nodes.add(currNode);
