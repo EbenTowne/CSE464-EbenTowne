@@ -247,19 +247,19 @@ public class DotGraph {
         TraverseStrategy traverseStrategy;
         if (algo == Algorithm.BFS) {
             traverseStrategy = new bfsTraversal();
-            System.out.println("Using BFS Strategy");
+            System.out.println("\nUsing BFS Strategy");
         }
         else if (algo == Algorithm.DFS) {
             traverseStrategy = new dfsTraversal();
-            System.out.println("Using BFS Strategy");
+            System.out.println("\nUsing DFS Strategy");
         }
         else if (algo == Algorithm.Random){
             traverseStrategy = new randomTraversal();
-            System.out.println("Using Random Strategy");
+            System.out.println("\nUsing Random Strategy");
         }
         else
         {
-            System.out.println("Error: Invalid algo!");
+            System.out.println("\nError: Invalid algo!");
             return null;
         }
         return traverseStrategy.traverse(src, dst);
