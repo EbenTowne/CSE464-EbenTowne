@@ -17,7 +17,6 @@ public class DotGraph {
             line = line.trim();
             // Check for node labels by identifying "node;" format
             if (line.contains("->")) {
-                // Parse edges in the format "a -> b;"
                 String[] parts = line.replace(";", "").split("->");
                 if (parts.length == 2) {
                     String src = parts[0].trim();
@@ -33,14 +32,14 @@ public class DotGraph {
                 graph.addVertex(node);
             }
         }
-        System.out.println("Graph has been successfully parsed");
+        System.out.println("[Graph successfully parsed]");
         reader.close();
     }
 
     private static void initializeGraph() {
         graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         nodes = new Vector<>();
-        System.out.println("\nGraph initialized");
+        System.out.println("\n[Graph initialized]");
     }
 
     public static String graphtoString(){
@@ -81,7 +80,7 @@ public class DotGraph {
         if (!graph.containsVertex(label)) {
             graph.addVertex(label);
             nodes.add(label);
-            System.out.println("Node added: " + label);
+            System.out.println("Adding node: " + label);
             return true;
         } else {
             return false;
@@ -105,9 +104,8 @@ public class DotGraph {
         }
         addNode(src);
         addNode(dst);
-        System.out.println("Source node '" + src + "' and destination node '" + dst + "' have both been added");
         graph.addEdge(src, dst);
-        System.out.println("Edge '" + src + "->" + dst + "' has been added");
+        System.out.println("Added Edge: " + src + "->" + dst);
         return true;
     }
 
@@ -169,7 +167,7 @@ public class DotGraph {
 
     public static boolean removeNode(String label) {
         if(graph.containsVertex(label)){
-            System.out.println("Removing node " + label);
+            System.out.println("Removing node: " + label);
             graph.removeVertex(label);
             nodes.remove(label);
             return true;
@@ -193,7 +191,7 @@ public class DotGraph {
 
     public static boolean removeEdge(String srcLabel, String dstLabel){
         if(graph.containsEdge(srcLabel, dstLabel)){
-            System.out.println("Removing edge " + srcLabel + "->" + dstLabel);
+            System.out.println("Removing edge: " + srcLabel + "->" + dstLabel);
             graph.removeEdge(srcLabel, dstLabel);
             return true;
         }
@@ -247,17 +245,21 @@ public class DotGraph {
         if (algo == Algorithm.BFS) {
             //employ traversal strategy that uses the bfs Traversal Template
             traverseStrategy = new bfsTraversal();
+            System.out.println("Using BFS Strategy...");
         }
         else if (algo == Algorithm.DFS) {
             //employ traversal strategy that uses the dfs Traversal Template
             traverseStrategy = new dfsTraversal();
+            System.out.println("Using DFS Strategy...");
         }
         else if (algo == Algorithm.Random){
             traverseStrategy = new randomTraversal();
+            System.out.println("Using Random Strategy...");
         }
         else
         {
             return null;
+            System.out.println("Error no strategy found!");
         }
         return traverseStrategy.traverse(src, dst);
     }
@@ -298,7 +300,7 @@ public class DotGraph {
                     }
                 }
             }
-            System.out.println("Path was not found between " + src + " and " + dst);
+            System.out.println("Error: No path was found between " + src + " and " + dst + "!");
             return null;
         }
 
@@ -381,6 +383,7 @@ public class DotGraph {
        Random random;
 
 
+        //Cannot change output format from comment given the fact a specified output format was provided
        @Override
        public Path traverse(String src, String dst){
            random = new Random();
